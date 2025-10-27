@@ -24,9 +24,10 @@ export default function useNews() {
         // A API retorna um objeto com propriedade "results" que contém o array de artigos
         setNews(response.data.results);
         console.log('Dados recebidos:', response.data.results); // Para debug
-      } catch (error: any) {
-        setError(error.message);
-        console.error('Erro ao buscar notícias:', error);
+      } catch (err: unknown) {
+        const errorMessage = err instanceof Error ? err.message : 'Erro desconhecido';
+        setError(errorMessage);
+        console.error('Erro ao buscar notícias:', errorMessage);
       } finally {
         setLoading(false);
       }

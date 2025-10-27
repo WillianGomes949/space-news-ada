@@ -1,6 +1,5 @@
 "use client";
 import useNews from "@/Hooks/useNews";
-import Image from "next/image";
 
 export default function NewsList() {
   const { news, loading, error } = useNews();
@@ -67,9 +66,8 @@ export default function NewsList() {
             key={article.id}
             className="mt-2 md:flex gap-4 mb-8 pb-4 border-b border-gray-300 dark:border-gray-700"
           >
-            {/* Imagem com fallback */}
-            <img
-             
+            {/* eslint-disable-next-line @next/next/no-img-element */}
+              <img
               src={article.image_url}
               alt={article.title}
               className="w-full md:w-1/3 h-48 object-cover rounded-lg"
@@ -77,6 +75,7 @@ export default function NewsList() {
                 (e.target as HTMLImageElement).src = "/placeholder-image.jpg";
               }}
             />
+             {/* eslint-enable-next-line @next/next/no-img-element */}
             <div className="flex flex-col justify-between mt-4 md:mt-0 md:w-2/3">
               <div className="flex flex-col items-start justify-top gap-3">
                 <h2 className="text-2xl font-bold text-gray-900 dark:text-white">
