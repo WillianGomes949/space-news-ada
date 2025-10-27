@@ -2,7 +2,6 @@
 import axios from "axios";
 import { useEffect, useState } from "react";
 
-// Interface corrigida baseada na API real
 interface Article {
   id: number;
   title: string;
@@ -25,7 +24,7 @@ export default function useNews() {
         // A API retorna um objeto com propriedade "results" que contém o array de artigos
         setNews(response.data.results);
         console.log('Dados recebidos:', response.data.results); // Para debug
-      } catch (error) {
+      } catch (error: any) {
         setError(error.message);
         console.error('Erro ao buscar notícias:', error);
       } finally {
