@@ -26,7 +26,7 @@ export default function Header() {
               <li>
                 <Link href="/">Home</Link>
               </li>
-              <li>
+              {/* <li>
                 <Link href="/trand">Trand</Link>
               </li>
               <li>
@@ -34,7 +34,7 @@ export default function Header() {
               </li>
               <li>
                 <Link href="/sobre">About</Link>
-              </li>
+              </li> */}
             </ul>
           </nav>
           <nav className="block md:hidden">
@@ -51,9 +51,9 @@ export default function Header() {
           <div className="border border-gray-400 p-4 rounded-xl mt-4">
             <div className="flex flex-col space-y-4">
               <Link href="/">Home</Link>
-              <Link href="/trand">Trand</Link>
+              {/* <Link href="/trand">Trand</Link>
               <Link href="/categoria">Category</Link>
-              <Link href="/sobre">About</Link>
+              <Link href="/sobre">About</Link> */}
             </div>
           </div>
         )}
