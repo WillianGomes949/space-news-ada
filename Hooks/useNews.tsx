@@ -10,6 +10,10 @@ interface Article {
   summary: string;
   published_at: string;
   news_site: string;
+  authors: {
+    name: string,
+    social: null;
+  };
 }
 
 export default function useNews() {
@@ -21,9 +25,8 @@ export default function useNews() {
     async function fetchNews() {
       try {
         const response = await axios.get('https://api.spaceflightnewsapi.net/v4/articles/');
-        // A API retorna um objeto com propriedade "results" que contém o array de artigos
         setNews(response.data.results);
-        console.log('Dados recebidos:', response.data.results); // Para debug
+        // console.log('Dados recebidos:', response.data.results); 
       } catch (err: unknown) {
         const errorMessage = err instanceof Error ? err.message : 'Erro desconhecido';
         setError(errorMessage);

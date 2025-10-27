@@ -1,11 +1,37 @@
 "use client";
 import useNews from "@/Hooks/useNews";
-
+import { useEffect, useState } from "react";
 export default function NewsList() {
   const { news, loading, error } = useNews();
+  const [visitedLinks, setVisitedLinks] = useState<Set<string>>(new Set());
+  const [isInitialized, setIsInitialized] = useState(false);
 
-  // Skeleton Loading
-  if (loading)
+  useEffect(() => {
+    if (typeof window !== "undefined") {
+      const saved = localStorage.getItem("visitedNews");
+      if (saved) {
+        try {
+          const savedArray = JSON.parse(saved);
+          setVisitedLinks(new Set(savedArray));
+        } catch (error) {
+          console.error("Erro ao carregar links visitados:", error);
+        }
+      }
+      setIsInitialized(true); 
+    }
+  }, []);
+
+  const handleLinkClick = (url: string) => {
+    const newVisited = new Set(visitedLinks);
+    newVisited.add(url);
+    setVisitedLinks(newVisited);
+
+    if (typeof window !== "undefined") {
+      localStorage.setItem("visitedNews", JSON.stringify([...newVisited]));
+    }
+  };
+
+  if (loading || !isInitialized)
     return (
       <section className="container mx-auto flex flex-col items-center justify-between p-4 mt-8 gap-4">
         <article className="w-full">
@@ -50,59 +76,69 @@ export default function NewsList() {
         <div className="text-red-500">Erro: {error}</div>
       </section>
     );
-  // Verifica se news existe e é um array
+ 
   if (!news || news.length === 0)
     return (
       <section className="container mx-auto flex flex-col items-center justify-between p-4 mt-8">
         <div>Nenhuma notícia encontrada.</div>
       </section>
     );
-
+  
   return (
     <section className="container mx-auto flex flex-col items-center justify-between p-4 mt-8 gap-4">
       <article className="w-full">
-        {news.map((article) => (
-          <div
-            key={article.id}
-            className="mt-2 md:flex gap-4 mb-8 pb-4 border-b border-gray-300 dark:border-gray-700"
-          >
-            {/* eslint-disable-next-line @next/next/no-img-element */}
+        {news.map((article) => {
+          const isVisited = visitedLinks.has(article.url);
+          return (
+            <div
+              key={article.id}
+              className="mt-2 md:flex gap-4 mb-8 pb-4 border-b border-gray-300 dark:border-gray-700"
+            >
+              {/* eslint-disable-next-line @next/next/no-img-element */}
               <img
-              src={article.image_url}
-              alt={article.title}
-              className="w-full md:w-1/3 h-48 object-cover rounded-lg"
-              onError={(e) => {
-                (e.target as HTMLImageElement).src = "/placeholder-image.jpg";
-              }}
-            />
-             {/* eslint-enable-next-line @next/next/no-img-element */}
-            <div className="flex flex-col justify-between mt-4 md:mt-0 md:w-2/3">
-              <div className="flex flex-col items-start justify-top gap-3">
-                <h2 className="text-2xl font-bold text-gray-900 dark:text-white">
-                  {article.title}
-                </h2>
-                <p className="text-gray-700 dark:text-gray-400 text-base">
-                  {article.summary}
-                </p>
-                {article.news_site && (
-                  <span className="text-sm text-gray-500 dark:text-gray-400">
-                    Fonte: {article.news_site}
-                  </span>
-                )}
-              </div>
-              <div className="mt-4">
-                <a
-                  href={article.url}
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  className="text-blue-600 dark:text-blue-400 hover:text-blue-800 dark:hover:text-blue-300 font-medium"
-                >
-                  Leia mais
-                </a>
+                src={article.image_url}
+                alt={article.title}
+                className="w-full md:w-1/3 h-48 object-cover rounded-lg"
+                onError={(e) => {
+                  (e.target as HTMLImageElement).src = "/placeholder-image.jpg";
+                }}
+              />
+              {/* eslint-enable-next-line @next/next/no-img-element */}
+              <div className="flex flex-col justify-between mt-4 md:mt-0 md:w-2/3">
+                <div className="flex flex-col items-start justify-top gap-3">
+                  <h2 className="text-2xl font-bold text-gray-900 dark:text-white">
+                    {article.title}
+                  </h2>
+                  <p className="text-gray-700 dark:text-gray-400 text-base">
+                    {article.summary}
+                  </p>
+                  <div className="w-full flex justify-between items-center text-sm text-gray-500 dark:text-gray-400">
+                    <p>Fonte: {article.news_site}</p>
+                    <p>
+                      Publicado em:
+                      {new Date(article.published_at).toLocaleDateString()}
+                    </p>
+                  </div>
+                </div>
+                <div className="mt-4">
+                  <a
+                    href={article.url}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    onClick={() => handleLinkClick(article.url)}
+                    className={`${
+                      isVisited
+                        ? "text-green-600 dark:text-green-400 hover:text-green-800 dark:hover:text-green-300"
+                        : "text-blue-600 dark:text-blue-400 hover:text-blue-800 dark:hover:text-blue-300"
+                    }`}
+                  >
+                    {isVisited ? "Visited" : "Read More"}
+                  </a>
+                </div>
               </div>
             </div>
-          </div>
-        ))}
+          );
+        })}
       </article>
     </section>
   );
