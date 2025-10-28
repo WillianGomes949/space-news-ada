@@ -99,9 +99,6 @@ export default function NewsList() {
                 src={article.image_url}
                 alt={article.title}
                 className="w-full md:w-1/3 h-48 object-cover rounded-lg"
-                onError={(e) => {
-                  (e.target as HTMLImageElement).src = "/placeholder-image.jpg";
-                }}
               />
               {/* eslint-enable-next-line @next/next/no-img-element */}
               <div className="flex flex-col justify-between mt-4 md:mt-0 md:w-2/3">
